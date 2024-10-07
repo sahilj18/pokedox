@@ -1,14 +1,42 @@
 import data from "./data";
+import shuffle from "array-shuffle";
 
-const dataRow =document.querySelector"([data-row])";
-console.log(dataRow);
+// Component
+import PokemonCard from "./components/PokemonCard";
 
+// === DOM Targeting ===
+const inputEl = document.querySelector('input[type="text"]');
+const dataRow = document.querySelector("[data-row]");
 
-for (let pokemon of data){
+renderPokemon(shuffle(data));
 
+// Give list, it will render them
+function renderPokemon(list) {
+  dataRow.textContent = "";
 
-const p =document.createElement("p");
-p.textcontent =pokemon.name;
-dataRow.appendChild (p);
-
+  list.forEach((pokemonObj) => {
+    PokemonCard(pokemonObj);
+  });
 }
+
+function handleSearch(input) {
+  const filteredPokemon = data.filter((pokemonObj) =>
+    pokemonObj.name.toLowerCase().includes(input)
+  );
+
+  renderPokemon(filteredPokemon);
+}
+
+inputEl.addEventListener("input", (e) => {
+  const currentInput = e.target.value.trim().toLowerCase();
+  handleSearch(currentInput);
+});
+
+// Add / to active search
+document.addEventListener("keydown", (e) => {
+  if (e.key === "/") {
+    // Don't type
+    e.preventDefault();
+    inputEl.focus();
+  }
+});
